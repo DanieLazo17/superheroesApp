@@ -1,0 +1,22 @@
+<div class="col">
+    <div class="card h-100">
+        <img [src]="miPersonaje.image.url" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{miPersonaje.name}}</h5>
+            <p class="card-text"></p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Intelligence: {{(miPersonaje.powerstats.intelligence=="null")?0:miPersonaje.powerstats.intelligence}}</li>
+                <li class="list-group-item">Strength: {{(miPersonaje.powerstats.strength=="null")?0:miPersonaje.powerstats.strength}}</li>
+                <li class="list-group-item">Speed: {{(miPersonaje.powerstats.speed=="null")?0:miPersonaje.powerstats.speed}} </li>
+                <li class="list-group-item">Durability: {{(miPersonaje.powerstats.durability=="null")?0:miPersonaje.powerstats.durability}}</li>
+                <li class="list-group-item">Power: {{(miPersonaje.powerstats.power=="null")?0:miPersonaje.powerstats.power}}</li>
+                <li class="list-group-item">Combat: {{(miPersonaje.powerstats.combat=="null")?0:miPersonaje.powerstats.combat}}</li>
+            </ul>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" (click)="mostrarDetallePersonaje()" type="button" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">Ver características</button>
+                <button class="btn btn-primary" (click)="eliminarPersonaje()" type="button">Eliminar del equipo</button>
+            </div>
+        </div>
+    </div>
+</div>

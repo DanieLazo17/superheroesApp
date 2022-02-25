@@ -1,0 +1,12 @@
+<div class="col mb-2 mt-2">
+    <div class="card h-100">
+        <img src="{{personaje.image.url}}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{personaje.name}}</h5>
+            <p class="card-text"></p>            
+            <div class="d-grid gap-2">
+                <button type="button" (click)="agregar()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Agregar al equipo</button>
+            </div>
+        </div>
+    </div>
+</div>

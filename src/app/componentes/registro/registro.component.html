@@ -1,0 +1,36 @@
+<div class="container mt-4">
+    <div class="row">
+        <h2 class="text-center" ngClass="fuente">Acceso a tu cuenta</h2>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <form class="col-10 col-sm-8 col-md-6 col-lg-4" [formGroup]="formRegistro">
+            <label for="txtEmail" class="mt-2">Correo</label>
+            <input type="text" formControlName="email" name="email" id="txtEmail" class="form-control" [class.is-invalid]="email.invalid && email.touched" autofocus>
+            <div *ngIf="email.invalid && email.touched" class="alert alert-danger mt-2" role="alert">
+                <small>Please provide a valid email.</small>
+            </div>
+
+            <label for="txtPassword" class="mt-2">Contraseña</label>
+            <input type="password" formControlName="password" name="password" id="txtPassword" class="form-control" [class.is-invalid]="password.invalid && password.touched">
+            <div *ngIf="password.invalid && password.touched" class="alert alert-danger mt-2" role="alert">
+                <small>Please provide a valid password.</small>
+            </div>
+
+            <div class="d-grid gap-2 col-12 mx-auto">
+                <button type="submit" (click)="enviar()" id="btnIngreso" class="btn btn-success mt-3"
+                    [disabled]="!formRegistro.valid">Enviar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-10 col-sm-8 col-md-6 col-lg-4 mt-2">
+            <p *ngIf="!email.touched" id="demo">{{mensaje}}</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+.btnSalir{
+    display: none;
+}
+
+.collapse div p{
+    color: #ffffff;
+    margin: 0px 0px 0px;
+}
+
+.fondo-color {
+    background: #ededed;
+}

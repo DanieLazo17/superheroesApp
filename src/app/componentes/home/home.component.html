@@ -1,0 +1,135 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" routerLink="/home">Home</a>
+                </li>
+            </ul>            
+            <form class="d-flex" [formGroup]="formBusqueda">
+                <input class="form-control me-2" type="search" formControlName="nombre" name="nombre" id="txtNombre" placeholder="Buscar personaje..." aria-label="Search">
+                <button class="btn btn-outline-light me-5" type="submit" (click)="buscarPorNombre()" [disabled]="!formBusqueda.valid" id="btnBuscar">Buscar</button>
+            </form>
+            <div class="me-4">
+                <p *ngIf="user.MiEmail!=null">Bienvenido/a {{user.MiEmail}}</p>
+            </div>
+            <button class="btn btn-success" type="submit" [ngClass]="{'btnSalir':user.MiEmail==''}" (click)="salir()">Cerrar sesión</button>            
+        </div>
+    </div>
+</nav>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-2 mt-1" id="miEquipoId">
+    <!-- Tarjeta con estadisticas del equipo -->
+    <div *ngIf="habilitaResumenEquipo" class="col">
+        <div class="card h-100">                
+            <div class="card-body">
+                <h5 class="card-title">My team</h5>
+                <p class="card-text">Qualities</p>
+                <ul class="list-group list-group-flush">
+                    <li *ngFor="let estadistica of estadisticasDelEquipo|ordenarEstadisticas; let primero=first" class="list-group-item">                        
+                        <span *ngIf="primero"><b>{{ estadistica[0].charAt(0).toUpperCase() + estadistica[0].slice(1) }}: {{ estadistica[1] }}</b></span>
+                        <span *ngIf="!primero">{{ estadistica[0].charAt(0).toUpperCase() + estadistica[0].slice(1) }}: {{ estadistica[1] }}</span>                        
+                    </li>
+                    <li class="list-group-item">Average height: {{miEquipo.averageHeight.toFixed(2)}} cm</li>
+                    <li class="list-group-item">Average weight: {{miEquipo.averageWeight.toFixed(2)}} kg</li>
+
+                    <li class="list-group-item">
+                        Good characters: 
+                        <span *ngFor="let personaje of goodCharacters; let ultimo=last">
+                            <span *ngIf="!ultimo">{{personaje.name}}, </span>
+                            <span *ngIf="ultimo">{{personaje.name}}</span>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        Bad characters: 
+                        <span *ngFor="let personaje of badCharacters; let ultimo=last">
+                            <span *ngIf="!ultimo">{{personaje.name}}, </span>
+                            <span *ngIf="ultimo">{{personaje.name}}</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Tarjetas con personajes del equipo -->
+    <app-mi-personaje *ngFor="let miPersonaje of misPersonajes" [miPersonaje]="miPersonaje" (eliminarMiPersonaje)="eliminarPersonajeDeEquipo($event)" (verMiPersonaje)="verDetallePersonaje($event)"></app-mi-personaje>  
+</div>
+
+<!-- Tarjetas con personajes encontrados -->
+<div *ngIf="personajesEncontrados.length != 0" class="mt-2 mb-2 text-dark fondo-color" >
+    <h2 class="ms-2 mb-0">{{ nombre.value.charAt(0).toUpperCase() + nombre.value.slice(1)}}</h2>
+    <span class="ms-2">{{personajesEncontrados.length}} resultados</span>
+</div>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-2 fondo-color">
+    <app-personaje-encontrado *ngFor="let personaje of personajesEncontrados" [personaje]="personaje" (agregarPersonaje)="sumarPersonajeAlEquipo($event)"></app-personaje-encontrado>  
+</div>
+
+<!-- Modal con detalles de un personaje del equipo -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div *ngIf="habilitaModal" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{personajeModal.name}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img [src]="personajeModal.image.url" class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title"></h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Full-name: {{personajeModal.biography['full-name']}}</li>
+                                    <li class="list-group-item">
+                                        Aliases: 
+                                        <span *ngFor="let alias of personajeModal.biography.aliases; let ultimo=last">
+                                            <span *ngIf="!ultimo">{{alias}}, </span>
+                                            <span *ngIf="ultimo">{{alias}}</span>
+                                        </span>
+                                    </li>
+                                    <li class="list-group-item">Height: {{personajeModal.appearance.height[1]}}</li>
+                                    <li class="list-group-item">Weight: {{personajeModal.appearance.weight[1]}}</li>
+                                    <li class="list-group-item">Eye-color: {{personajeModal.appearance['eye-color']}}</li>
+                                    <li class="list-group-item">Hair-color: {{personajeModal.appearance['hair-color']}}</li>
+                                    <li class="list-group-item">Base: {{personajeModal.work.base}}</li>
+                                </ul>
+                                <p class="card-text"></p>
+                                <p class="card-text"><small class="text-muted"></small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>             
+            </div>
+        </div>
+    </div>
+</div>
+  
+<!-- Modal con mensaje -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div *ngIf="habilitaModalDeAlerta" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">{{tituloModalDeAlerta}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{contenidoModalDeAlerta}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                <!--<button type="button" class="btn btn-primary">Understood</button>-->
+            </div>
+        </div>
+    </div>
+</div>
