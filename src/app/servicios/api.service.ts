@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators'
+import { catchError, retry } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +19,16 @@ export class ApiService {
   }
 
   registrar(datos:FormData):Observable<any>{
-    return this.clienteHttp.post(this.apiRegistro, datos);
+    return this.clienteHttp.post(this.apiRegistro, datos)
+    .pipe(
+      catchError(this.handleError)
+    );
   }
 
   buscarPersonajePorNombre(name: string){
     return this.clienteHttp.get(this.apiSuperHero + this.accessToken + '/search/' + name)
     .pipe(
+      retry(2),
       catchError(this.handleError)
     );
   }
