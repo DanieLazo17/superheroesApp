@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -32,7 +33,7 @@ export class RegistroComponent implements OnInit {
     datos.append("password", this.formRegistro.get('password')!.value);
     this.api.registrar(datos).subscribe(
       respuesta => { this.permitirAcceso(respuesta) },
-      error => { this.denegarAcceso(error) },
+      (error: HttpErrorResponse) => { this.denegarAcceso(error) },
     );
   }
 
@@ -44,8 +45,8 @@ export class RegistroComponent implements OnInit {
     this.ruteo.navigate(['/home']);
   }
 
-  denegarAcceso(error: any): void {
-    this.formRegistro.reset();
+  denegarAcceso(error: HttpErrorResponse): void {
+    this.formRegistro.reset();    
     this.mensaje = error.error.error;
   }
 

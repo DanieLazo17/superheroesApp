@@ -1,8 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Character } from 'src/app/entidades/character';
-import { Powerstats } from 'src/app/entidades/powerstats';
 import { Team } from 'src/app/entidades/team';
 import { ApiService } from 'src/app/servicios/api.service';
 import { UserService } from 'src/app/servicios/user.service';
@@ -54,7 +54,8 @@ export class HomeComponent implements OnInit {
 
   buscarPorNombre(){    
     this.api.buscarPersonajePorNombre(this.formBusqueda.get('nombre')!.value).subscribe(
-      respuesta => { this.mostrarPersonajesEncontrados(respuesta) }            
+      respuesta => { this.mostrarPersonajesEncontrados(respuesta) },
+      (error:HttpErrorResponse) => { alert(error.error) }
     )    
   }
 
